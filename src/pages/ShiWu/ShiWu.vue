@@ -36,6 +36,7 @@
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll'
 import {mapState} from 'vuex'
+import { watch } from 'fs';
   export default {
     data(){
       return{
@@ -54,12 +55,18 @@ import {mapState} from 'vuex'
     methods:{
       ishigh(num){
         this.$router.push('/shiwu/faxian/'+num*1)
+       
       } 
     },
      computed:{
       ...mapState({
           shiwuData: state => state.shiwu.shiwuData
       })
+    },
+    watch:{
+      shiwuData(){
+        console.log(2)
+      }
     }
   }
 </script>

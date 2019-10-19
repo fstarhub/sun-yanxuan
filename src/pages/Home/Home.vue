@@ -18,19 +18,19 @@
                 <span>{{item.name}}</span>
               </li>
             </ul>
-            <span class="xiaJianTou " @click="isJiantou" >
+            <span class="xiaJianTou " @click="isJiantou">
                 <i class="icon-xiajiantou iconfont"></i>
             </span>
             <!--点击箭头显示隐藏-->
             <div class="nav2" v-show="isNav">
               <div class="PinDao">
                 <span>全部频道</span>
-                <div class="shangJianTou" @click="isXiaJianTou"><i class="icon-arrow-top iconfont"></i></div>
+                <div class="shangJianTou" @click="isJiantou"><i class="icon-arrow-top iconfont"></i></div>
               </div>
               <ul class="nav2List">
                 <li class="nav2Item" :class="{active:high===index}"
                v-for="(item,index) in homeData.homenavList" :key="index"
-               @click="ishigh2(index)" >
+               @click="ishigh(index)" >
                {{item.name}}
                 </li>
               </ul>
@@ -53,7 +53,7 @@
           <!-- 如果需要分页器 -->
           <div class="swiper-pagination"></div>
         </div>
-          <div class="make" @click="isXiaJianTou"  v-show="isNav">
+          <div class="make" @click="isJiantou"  v-show="isNav">
           </div>
           <div class="WuYouTuiHuo">
             <ul class="WuYouTuiHuo-List">
@@ -211,8 +211,13 @@ import {mapState} from 'vuex'
           el: '.swiper-pagination',
             },
           })
-        
-        let scroll = new BScroll('.wrapper',{
+
+
+        if(this.scroll){
+        this.scroll.refresh()
+        return
+        }
+        this.scroll = new BScroll('.wrapper',{
         scrollX: true,
         click:true
         })
@@ -225,21 +230,20 @@ import {mapState} from 'vuex'
       isJiantou(){
         this.isNav = !this.isNav
       },
-      isXiaJianTou(){
-        this.isNav =!this.isNav
-      },
       ishigh(index){
         this.high = index
       },
-      ishigh2(index){
-      this.high = index
-    }
-      
     },
     computed: {
       ...mapState({
         homeData: state => state.home.homeData
       })
+    },
+    watch:{
+      deep:true,
+      high(){
+        this.scroll.refresh()
+      }
     }
   }
 </script>
@@ -247,7 +251,7 @@ import {mapState} from 'vuex'
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .home
   width 100%
-  height 100%
+  height 667px
   background darkgrey
   .heard
     width 100%

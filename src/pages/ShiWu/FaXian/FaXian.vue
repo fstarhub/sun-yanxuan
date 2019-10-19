@@ -1,5 +1,5 @@
 <template>
-  <div class="ShiWu-content wrappershangla"  v-if="list">
+  <div class="ShiWu-content wrappershangla" v-show="list">
     <div class="RongQi">
        <div class="ShiWu-content-datu" v-for="(item,index) in list" :key="index">
         <div class="XuanMei">
@@ -32,9 +32,9 @@
     async mounted(){
      await this.$store.dispatch('getFaxianData',{yeshu:this.yeshu,geshu:this.geshu})
      this.list = this.list.concat(this.faxianData[this.index].topics)
-       this.$nextTick(()=>{
+      //  this.$nextTick(()=>{
         this.scroll()
-      })
+      // })
     },
     
     methods:{
@@ -43,44 +43,45 @@
           scrollY: true,
           click:true,
           probeType:1,
-           pullUpLoad: {
-            threshold: -20 // 在上拉到超过底部 20px 时，触发 pullingUp 事件
-          }
+          pullUpLoad: {
+          threshold: -20 // 在上拉到超过底部 20px 时，触发 pullingUp 事件
+           }
           })
            
            this.scroll.on('pullingUp',async () => {
             this.yeshu++
             await this.$store.dispatch('getFaxianData',{yeshu:this.yeshu,geshu:this.geshu})
+               if(this.faxianData[this.index]){
               this.list =this.list.concat(this.faxianData[this.index].topics)
-             this.pullingDownUp()
+               this.pullingDownUp()}
               })
             },
                pullingDownUp(){
                   this.scroll.finishPullUp()
                   this.scroll.refresh() //重新计算元素高度
                 }
-    
-    },
-      watch: {
-        deep:true,
-        async $route(){
-          this.index = this.$route.params.id*1
-          await this.$store.dispatch('getFaxianData',{yeshu:this.yeshu,geshu:this.geshu})
-          if(this.faxianData[this.index]){
-              this.list =[...this.faxianData[this.index].topics]
-          }
-         
+            },
+    watch: {
+      async $route(){
+        this.index = this.$route.params.id*1
+        await this.$store.dispatch('getFaxianData',{yeshu:this.yeshu,geshu:this.geshu})
+        if(this.faxianData[this.index]){
+            this.list =[...this.faxianData[this.index].topics]
         }
       },
-  
+      //  faxianData(){
+      //   // deep:true,
+      //   // handler(){
+      //   //   console.log(1)
+      //   // }
+      //   console.log(1)
+      // }
+    },
     computed:{
       ...mapState({
-         faxianData: state => state.faxian.faxianData
-      }),
-
-
-
-    },
+          faxianData: state => state.faxian.faxianData
+      })
+    }
    }
 </script>
 
